@@ -1,0 +1,13 @@
+GET http://localhost:8080/hello
+
+> {%
+ client.test("test-hello", function() {
+   client.log("test hello");
+   client.log("response.body");
+   client.assert(response.status === 200, "status code is not 200");
+   client.assert(response.body === "Hello, Spring!", "result is incorrect");
+ })
+ %}
+
+###
+
