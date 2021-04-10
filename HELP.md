@@ -126,5 +126,41 @@ SpringBoot会自动读取放在resources目录及其子目录下的application�
    mybatis-generator:generate -e
    ```
 
+
+
 #### 如何编写模糊查询的接口？
 
+1. 使用参数查询，需要使用mybatis生成的xxxExample实例，调用其createCriteria方法获得Criteria实例，再调用Criteria实例的andNameLike方法，参数就是要模糊查询的字符串。之后，再将xxxExample当作参数，传入mapper的方法中即可。
+
+2. 后端返回给前端的信息，应当采用标准化格式，比如有响应成功与否的信息，有给前端的提示信息，还要有真正的响应的内容。统一的响应格式无疑有益于前后端的协同开发。
+
+3. 无论请求响应，很多时候都无法与数据库实体类的各个属性一一对应。有时响应要少一点，比如前端传来账号密码，登录成功后，后端就不该把密码再给返回；有时查询请求有多个参数，用单个字符串参数不方面，可也没必要用到实体类的所有属性，常用的也就是id和name；有时多个对象可能有关联，可能就要给某个对象添几个属性。凡此种种，都需要将请求和响应重新包装，要保证Controller层中不要与domain/pojo层发生直接交互。
+
+   ```java
+   // EBookController.java
+   @GetMapping("/get")
+   public CommonResp get(EbookReq req){
+       CommonResp<List<EbookResp>> resp = new CommonResp<>();
+       List<EbookResp> ebookRespList = ebookService.get(req);
+       resp.setContent(ebookRespList);
+       return resp;
+   }
+   
+   // 参数名一致时，会自动找到类中的属性映射
+   public List<EbookResp> get(EbookReq req){
+       EbookExample example = new EbookExample();
+       EbookExample.Criteria criteria = example.createCriteria();
+       criteria.andNameLike("%" + req.getName() + "%");
+       List<Ebook> ebooks = ebookMapper.selectByExample(example);
+   
+       List<EbookResp> respList = new ArrayList<>();
+       for (Ebook ebook : ebooks) {
+           EbookResp ebookResp = new EbookResp();
+           BeanUtils.copyProperties(ebook, ebookResp);
+           respList.add(ebookResp);
+       }
+       return respList;
+   }
+   ```
+
+4. 注意上面代码中将Ebook转换为EbookResp再放入EbookResp列表的逻辑可以抽取出来，做成通用的工具类中的方法，从而减少代码冗余。
