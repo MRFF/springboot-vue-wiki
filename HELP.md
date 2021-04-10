@@ -125,3 +125,6 @@ SpringBoot会自动读取放在resources目录及其子目录下的application�
    ```cmd
    mybatis-generator:generate -e
    ```
+
+#### 如何编写模糊查询的接口？
+
