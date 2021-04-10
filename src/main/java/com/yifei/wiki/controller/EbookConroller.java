@@ -23,4 +23,12 @@ public class EbookConroller {
         resp.setContent(ebooks);
         return resp;
     }
+
+    @GetMapping("/get")
+    public CommonResp<List<Ebook>> get(String name){
+        CommonResp<List<Ebook>> resp = new CommonResp<>();
+        List<Ebook> ebooks = ebookService.get(name);
+        resp.setContent(ebooks);
+        return resp;
+    }
 }
