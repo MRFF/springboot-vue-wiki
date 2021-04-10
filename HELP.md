@@ -1,7 +1,5 @@
 ## 2
 
-### 开发第一个HelloWorld接口
-
 #### SpringBoot项目中，如何写接口?
 
 一般来说接口都放在controller文件夹下，之后新建xxxController类，在类中写方法。、那Spring怎么知道这个类是接口类，用户访问什么地址时才会返回呢？首先，要使用@RestConroller将类注册为RESTful接口（即形如/user/1的接口），同时在方法上使用@RequestMapping配置映射地址（允许所有请求方法），之后启动应用，即可访问/hello。那应用又是怎么找到我们注册的接口呢？答案藏在应用上方的@SpringBootApplication注释中，该注释内有@ComponentScan，默认配置下会扫描应用所在文件夹下的所有已注册接口，可使用该注解可自行配置需要扫描的包。
@@ -52,3 +50,47 @@ SpringBoot会自动读取放在resources目录及其子目录下的application�
 3. 双击shift（或者点击Help-Action），找到compiler.automake.allow.when.app.runnin，开启配置。此步骤是为了确保应用启动后自动编译。
 
 如此，以后每次代码改动，只要保存，就会随后触发自动编译（比起手动重启要快很多），立即看到结果。
+
+
+
+## 3
+
+#### 如何在SpringBoot中整合并使用Mybatis？
+
+要使用Mybatis建立持久层，需要以下几步：
+
+1. 在依赖中引入mysql和mybatis-spring-boot-starter。
+
+   ```xml
+   <dependency>
+       <groupId>mysql</groupId>
+       <artifactId>mysql-connector-java</artifactId>
+   </dependency>
+   
+   <dependency>
+       <groupId>org.mybatis.spring.boot</groupId>
+       <artifactId>mybatis-spring-boot-starter</artifactId>
+       <version>2.1.3</version>
+   </dependency>
+   ```
+
+2. 在配置中设置spring.datasource的url、username、password以及driver
+
+   ```properties
+   # 配置数据源
+   spring.datasource.url=jdbc:mysql://localhost:3306/wiki?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai
+   spring.datasource.username=wiki
+   spring.datasource.password=wiki
+   spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+   ```
+
+3. 建立实体类与操作实体的接口mapper，在mapper中定义查询方法，并在resources中新建同名xml配置，编写slq语句。
+
+4. 在应用中引入mapper类，在Application类上使用@MapperScan注解（让应用知道有mapper都在哪儿）；在配置中设置mapper配置的路径（让应用知道mapper配置都在哪儿），使用mybatis.mapper-locations属性。
+
+   ```properties
+   # 设置mapper.xml的位置
+   mybatis.mapper-locations=classpath:/mapper/**/*.xml
+   ```
+
+5.  编写相应的service和controller。service中定义mapper属性，并使用@Autowired自动装配；对service使用@Service注册后，在controller中定义service属性，并使用@Autowired自动装配。使用@Autowired等于是让spring托管对象，我们不必去new对象。@Service的意义类似，也是让spring为我们在容器中创建该对象，好在其它地方使用。

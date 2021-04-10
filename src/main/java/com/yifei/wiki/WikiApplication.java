@@ -1,5 +1,6 @@
 package com.yifei.wiki;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,8 +11,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 
 
-//@ComponentScan({"com.yifei", "com.test"})
+@ComponentScan("com.yifei")
 @SpringBootApplication
+@MapperScan("com.yifei.wiki.mapper")
 public class WikiApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(WikiApplication.class);
