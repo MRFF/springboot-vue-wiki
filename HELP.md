@@ -94,3 +94,35 @@ SpringBoot会自动读取放在resources目录及其子目录下的application�
    ```
 
 5.  编写相应的service和controller。service中定义mapper属性，并使用@Autowired自动装配；对service使用@Service注册后，在controller中定义service属性，并使用@Autowired自动装配。使用@Autowired等于是让spring托管对象，我们不必去new对象。@Service的意义类似，也是让spring为我们在容器中创建该对象，好在其它地方使用。
+
+#### 如何使用mybatis-generator插件自动生成代码？
+
+1. 在依赖插件中引入mybatis-generator-maven-plugin，并编写好插件配置文件。要提供连接字段，代码生成后各自存放的位置等。
+
+   ```xml
+   <!--  Mybatis代码自动生成插件    -->
+   <plugin>
+       <groupId>org.mybatis.generator</groupId>
+       <artifactId>mybatis-generator-maven-plugin</artifactId>
+       <version>1.4.0</version>
+       <configuration>
+           <configurationFile>src/main/resources/generator/generator-config.xml</configurationFile>
+           <verbose>true</verbose>
+       </configuration>
+       <dependencies>
+           <dependency>
+               <groupId>mysql</groupId>
+               <artifactId>mysql-connector-java</artifactId>
+               <version>8.0.23</version>
+           </dependency>
+       </dependencies>
+   </plugin>
+   ```
+
+2. 增加maven启动选项，配置maven启动命令，并以该命令执行，等待生成完成。
+
+   ```cmd
+   mybatis-generator:generate -e
+   ```
+
+   
