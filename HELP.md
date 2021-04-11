@@ -219,6 +219,8 @@ UI界面可以怎么写？
 
 ```cmd
 npm install axios --save
+# 导入ant-design-vue的图标
+npm install @ant-design/icons-vue --save
 ```
 
 前端使用http库axios向后端发送请求。凡是前后端分离的项目，首先要解决的问题就是跨域问题。跨域问题之所以产生，是因为浏览器有所谓同源策略，即从源头A获取得的文档与脚本无法在浏览器内与源头B的资源交互，该策略是为了避免恶意攻击。而所谓源头，由协议、域名、端口共同定义。因此，即使是本地开发前后端，因为端口不同，前端发给后端的请求也会被认为是跨域请求。Spring可以配置跨域注册，从而规避该问题。
@@ -240,7 +242,7 @@ public class CorsConfig implements WebMvcConfigurer {
 }
 ```
 
-响应式数据
+#### Vue3中前端如何使用响应式数据？
 
 Vue2使用data定义与页面交互的变量，methods定义用到的方法，mounted、created等生命周期声明各自要执行的函数。Vue3则将这些统归于setup之内，并使用ref或reactive来定义响应式数据。
 
@@ -273,9 +275,36 @@ import { defineComponent, onMounted, ref } from 'vue';
   });
 ```
 
+前端使用a-list组件展示电子书，并引入grid属性分栏。而要使用ant-design-vue的图标，需要额外导入，并在main.ts中全局导入。后端则使用动态SQL，保证前端不给查询参数时，能返回表中全部数据。
 
+#### 如何完成vue cli多环境配置？
 
-```cmd
-npm install @ant-design/icons-vue --save
-```
+现在前端访问后端接口时，由于前后端都在本地开发，主机名均为localhost。但是，之后上线部署，前后端可能并不在一起，到时在一一替换，岂不麻烦。因此，vue cli引入环境配置，支持为不同的环境配置不同的参数，供前端访问、编译、运行使用。具体做法如下：
 
+1. 在前端项目根目录下新建.env.dev和.env.prod文件，为开发环境与生产环境配置不同的参数。
+
+   ```
+   NODE_ENV=development
+   VUE_APP_SERVER=http://localhost:8082
+   ```
+
+2. 在package.json中，为生产和开发配置不同的编译命令。
+
+   ```json
+   "scripts": {
+       "serve-dev": "vue-cli-service serve --mode dev --port 8080",
+       "serve-prod": "vue-cli-service serve --mode prod --port 8080",
+       "build-dev": "vue-cli-service build --mode dev",
+       "build-prod": "vue-cli-service build --mode prod",
+   },
+   ```
+
+3. 为axios库设置默认的baseURL，这样可以直接调用接口，domain根据使用环境不同，动态变化，而不必与domain拼接。
+
+   ```typescript
+   // main.ts
+   import axios from 'axios';
+   axios.defaults.baseURL = process.env.VUE_APP_SERVER;
+   ```
+
+   

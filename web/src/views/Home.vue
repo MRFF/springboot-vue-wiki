@@ -97,7 +97,7 @@
       const ebooks = ref();
 
       onMounted(() => {
-        axios.get('http://localhost:8082/ebook/get')
+        axios.get('/ebook/get')
                 .then((response) => {
                   const data = response.data;
                   ebooks.value = data.content;
@@ -128,3 +128,14 @@
 
   });
 </script>
+
+<!--scoped表示样式只在当前组件中生效-->
+<style scoped>
+    .ant-avatar{
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 8%;
+    margin: 5px 0;
+  }
+</style>
