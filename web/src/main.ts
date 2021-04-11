@@ -24,3 +24,16 @@ axios.defaults.baseURL = process.env.VUE_APP_SERVER;
 
 console.log('Environment: ', process.env.NODE_ENV);
 console.log('Server: ', process.env.VUE_APP_SERVER);
+
+axios.interceptors.request.use(function(config){
+    console.log('Parameters: ', config);
+    return config;
+}, error => {
+    return Promise.reject(error);
+});
+axios.interceptors.response.use(function(response){
+    console.log('Return: ', response);
+    return response;
+}, error => {
+    return Promise.reject(error);
+});

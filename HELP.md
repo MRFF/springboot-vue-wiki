@@ -307,4 +307,20 @@ import { defineComponent, onMounted, ref } from 'vue';
    axios.defaults.baseURL = process.env.VUE_APP_SERVER;
    ```
 
-   
+使用axios拦截器统一打印日志
+
+```typescript
+axios.interceptors.request.use(function(config){
+    console.log('Parameters: ', config);
+    return config;
+}, error => {
+    return Promise.reject(error);
+});
+axios.interceptors.response.use(function(response){
+    console.log('Return: ', response);
+    return response;
+}, error => {
+    return Promise.reject(error);
+});
+```
+
