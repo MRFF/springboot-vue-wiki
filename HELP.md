@@ -171,6 +171,13 @@ SpringBoot会自动读取放在resources目录及其子目录下的application�
 
 #### 如何搭建Vue开发环境？
 
+遇到的麻烦
+
+1. vue cli创建项目时，中途报错，提示unexpected token，后升级node，使用最新版vue cli解决。
+2. 安装ant design vue组件时，没有切入项目文件夹，导致ant组件无法使用，后进入项目目录安装解决。
+
+
+
 ```cmd
 # 确保已安装vue，且已升级到10以上
 npm get registry
@@ -196,3 +203,5 @@ UI界面可以怎么写？
 环境搭建完成后，首先要确定的是网页的部剧。
 
 ![image-20210411113629419](C:\Users\xyf22\AppData\Roaming\Typora\typora-user-images\image-20210411113629419.png)
+
+区分页面中不变的部分和变化的部分，其中header和footer每个页面都是如此，而sider和content却要变化。不变的部分就写道App.vue中，而变化的部分放在<router-view/>中。
