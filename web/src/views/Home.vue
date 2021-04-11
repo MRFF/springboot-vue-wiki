@@ -48,7 +48,29 @@
     <a-layout-content
             :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      {{ebooks}}
+    <!-- 电子书列表 -->
+    <a-list item-layout="vertical" size="large" :data-source="ebooks"
+                                                :grid="{ gutter: 20, column: 3}">
+
+      <template #renderItem="{ item }">
+        <a-list-item key="item.name">
+          <template #actions>
+        <span v-for="{ type, text } in actions" :key="type">
+          <component v-bind:is="type" style="margin-right: 8px" />
+          {{ text }}
+        </span>
+          </template>
+
+          <a-list-item-meta :description="item.description">
+            <template #title>
+              <a :href="item.href">{{ item.name }}</a>
+            </template>
+            <template #avatar><a-avatar :src="item.cover" /></template>
+          </a-list-item-meta>
+        </a-list-item>
+      </template>
+    </a-list>
+
     </a-layout-content>
   </a-layout>
 
@@ -58,9 +80,16 @@
   import { defineComponent, onMounted, ref } from 'vue';
   import axios from 'axios';
 
+  import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
+  const listData: Record<string, string>[] = [];
+
+
   export default defineComponent({
     name: 'Home',
     components: {
+      StarOutlined,
+      LikeOutlined,
+      MessageOutlined,
     },
 
     // vue3新增，初始化方法
@@ -68,15 +97,31 @@
       const ebooks = ref();
 
       onMounted(() => {
-        axios.get('http://localhost:8082/ebook/get?name=spring')
+        axios.get('http://localhost:8082/ebook/get')
                 .then((response) => {
                   const data = response.data;
                   ebooks.value = data.content;
                 });
       });
+
+      const pagination = {
+        onChange: (page: number) => {
+          console.log(page);
+        },
+        pageSize: 3,
+      };
+
+      const actions: Record<string, string>[] = [
+        { type: 'StarOutlined', text: '156' },
+        { type: 'LikeOutlined', text: '156' },
+        { type: 'MessageOutlined', text: '2' },
+      ];
+
       // 注意这里要将变量返回给页面
       return {
         ebooks,
+        pagination,
+        actions,
       };
     }
 

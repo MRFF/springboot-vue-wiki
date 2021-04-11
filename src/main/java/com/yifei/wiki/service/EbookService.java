@@ -9,6 +9,7 @@ import com.yifei.wiki.util.CopyUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,9 @@ public class EbookService {
     public List<EbookResp> get(EbookReq req){
         EbookExample example = new EbookExample();
         EbookExample.Criteria criteria = example.createCriteria();
-        criteria.andNameLike("%" + req.getName() + "%");
+        // 动态SQL，如果前端没有传参数，就返回所有的值
+        if(!ObjectUtils.isEmpty(req.getName()))
+            criteria.andNameLike("%" + req.getName() + "%");
         List<Ebook> ebooks = ebookMapper.selectByExample(example);
 
 //        List<EbookResp> respList = new ArrayList<>();
