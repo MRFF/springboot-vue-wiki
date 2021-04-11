@@ -164,3 +164,29 @@ SpringBoot会自动读取放在resources目录及其子目录下的application�
    ```
 
 4. 注意上面代码中将Ebook转换为EbookResp再放入EbookResp列表的逻辑可以抽取出来，做成通用的工具类中的方法，从而减少代码冗余。
+
+
+
+准备vue开发环境
+
+```cmd
+# 确保已安装vue，且已升级到10以上
+npm get registry
+npm config set registry http://registry.npm.taobao.org
+npm install -g @vue/cli@4.5.9
+vue --version
+vue create web
+cd web
+npm run serve
+
+# @next表示安装最新的未发布正式版本
+npm install ant-design-vue@next --save 
+```
+
+vue cli初始执行main.ts，将内容页App.vue渲染到id=app所在的页面（index.html）。
+
+UI界面可以怎么写？
+
+1. 要么使用原生html5，完全自己写页面
+2. 要么基于第三方css库，如bootstrap
+3. 要么使用基于Vue的UI组件，如ElementUI、Ant Design Vue 
