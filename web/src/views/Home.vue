@@ -48,18 +48,27 @@
     <a-layout-content
             :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      Content
+      Contents
     </a-layout-content>
   </a-layout>
 
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+  import { defineComponent } from 'vue';
+  import axios from 'axios';
 
-export default defineComponent({
-  name: 'Home',
-  components: {
-  },
-});
+  export default defineComponent({
+    name: 'Home',
+    components: {
+    },
+    // vue3新增，初始化方法
+    setup(){
+      console.log(11111);
+      axios.get('http://localhost:8082/ebook/get?name=spring')
+           .then((response) => {
+             console.log(response);
+           });
+    }
+  });
 </script>

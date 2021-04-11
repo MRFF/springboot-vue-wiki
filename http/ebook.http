@@ -1,6 +1,6 @@
-GET http://localhost:8080/ebook/list
+GET http://localhost:8081/ebook/list
 
 
 ###
 
-GET http://localhost:8080/ebook/get?name=spring
+GET http://localhost:8082/ebook/get?name=spring

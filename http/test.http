@@ -1,4 +1,4 @@
-GET http://localhost:8080/hello
+GET http://localhost:8081/hello
 
 > {%
  client.test("test-hello", function() {
@@ -11,7 +11,7 @@ GET http://localhost:8080/hello
 
 ###
 
-GET http://localhost:8080/test
+GET http://localhost:8081/test
 
 
 ###

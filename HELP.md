@@ -198,9 +198,9 @@ UI界面可以怎么写？
 2. 要么基于第三方css库，如bootstrap
 3. 要么使用基于Vue的UI组件，如ElementUI、Ant Design Vue 
 
-环境搭建完成后，首先要确定的是网页的部剧。
+#### 如何完成布局并自定义组件？
 
-![image-20210411113629419](C:\Users\xyf22\AppData\Roaming\Typora\typora-user-images\image-20210411113629419.png)
+环境搭建完成后，首先要确定的是网页的部剧。
 
 区分页面中不变的部分和变化的部分，其中header和footer每个页面都是如此，而sider和content却要变化。不变的部分就写在App.vue中，而变化的部分放在<router-view/>中。
 
@@ -209,4 +209,35 @@ UI界面可以怎么写？
 1. 提取公共部分的代码，在components目录下新建组件，一般命名格式为the-xxx.vue（驼峰TheXxx.vue亦可）。the表示该组件独一无二，且能避免与html自有标签重名。
 2. 在该组件文件中底部的<script>标签内，要使用vue提供的defineComponent将当前组件导出。
 3. 在使用到组件的页面的<script>标签内import组件，之后步骤同2。
+
+
+
+## 5
+
+#### 前后端如何互通？
+
+```cmd
+npm install axios --save
+```
+
+前端使用http库axios向后端发送请求。凡是前后端分离的项目，首先要解决的问题就是跨域问题。跨域问题之所以产生，是因为浏览器有所谓同源策略，即从源头A获取得的文档与脚本无法在浏览器内与源头B的资源交互，该策略是为了避免恶意攻击。而所谓源头，由协议、域名、端口共同定义。因此，即使是本地开发前后端，因为端口不同，前端发给后端的请求也会被认为是跨域请求。Spring可以配置跨域注册，从而规避该问题。
+
+```java
+@Configuration
+public class CorsConfig implements WebMvcConfigurer {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedHeaders(CorsConfiguration.ALL)
+                .allowedMethods(CorsConfiguration.ALL)
+                // 允许前端携带凭证
+                .allowCredentials(true)
+                // 1小时内不需要再预检（发送OPTIONS请求）
+                .maxAge(3600);
+    }
+}
+```
+
+
 
