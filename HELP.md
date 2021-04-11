@@ -239,5 +239,38 @@ public class CorsConfig implements WebMvcConfigurer {
 }
 ```
 
+响应式数据
+
+Vue2使用data定义与页面交互的变量，methods定义用到的方法，mounted、created等生命周期声明各自要执行的函数。Vue3则将这些统归于setup之内，并使用ref或reactive来定义响应式数据。
+
+```typescript
+// vue3新增onMounted来取代vue2中的mounted，用ref来定义响应式数据
+import { defineComponent, onMounted, ref } from 'vue';
+  import axios from 'axios';
+
+  export default defineComponent({
+    name: 'Home',
+    components: { 
+    },
+
+    // vue3新增，初始化方法
+    setup: function () {
+      const ebooks = ref();
+
+      onMounted(() => {
+        axios.get('http://localhost:8082/ebook/get?name=spring')
+                .then((response) => {
+                  const data = response.data;
+                  ebooks.value = data.content;
+                });
+      });
+		
+      return {
+        ebooks,
+      };
+    }
+  });
+```
+
 
 

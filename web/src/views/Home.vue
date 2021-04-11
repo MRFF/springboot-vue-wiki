@@ -48,27 +48,38 @@
     <a-layout-content
             :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      Contents
+      {{ebooks}}
     </a-layout-content>
   </a-layout>
 
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, onMounted, ref } from 'vue';
   import axios from 'axios';
 
   export default defineComponent({
     name: 'Home',
     components: {
     },
+
     // vue3新增，初始化方法
-    setup(){
-      console.log(11111);
-      axios.get('http://localhost:8082/ebook/get?name=spring')
-           .then((response) => {
-             console.log(response);
-           });
+    setup: function () {
+      const ebooks = ref();
+
+      onMounted(() => {
+        axios.get('http://localhost:8082/ebook/get?name=spring')
+                .then((response) => {
+                  const data = response.data;
+                  ebooks.value = data.content;
+                });
+      });
+      // 注意这里要将变量返回给页面
+      return {
+        ebooks,
+      };
     }
+
+
   });
 </script>
