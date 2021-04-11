@@ -167,7 +167,9 @@ SpringBoot会自动读取放在resources目录及其子目录下的application�
 
 
 
-准备vue开发环境
+## 4
+
+#### 如何搭建Vue开发环境？
 
 ```cmd
 # 确保已安装vue，且已升级到10以上
@@ -190,3 +192,7 @@ UI界面可以怎么写？
 1. 要么使用原生html5，完全自己写页面
 2. 要么基于第三方css库，如bootstrap
 3. 要么使用基于Vue的UI组件，如ElementUI、Ant Design Vue 
+
+环境搭建完成后，首先要确定的是网页的部剧。
+
+![image-20210411113629419](C:\Users\xyf22\AppData\Roaming\Typora\typora-user-images\image-20210411113629419.png)
