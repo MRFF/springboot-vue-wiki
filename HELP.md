@@ -333,3 +333,13 @@ axios.interceptors.response.use(function(response){
 1. 借助Servlet原生支持的Filter过滤器。
 2. 借助Sping的AOP机制。
 3. 借助SpringBoot的拦截器。
+
+
+
+## 6
+
+前端要增加一个页面，要做以下几步：
+
+1. 创建页面，即在views文件夹下创建vue文件。
+2. 编写路由，即在router文件夹内的文件中添加路由映射。
+3. 添加跳转，即在页面中添加
