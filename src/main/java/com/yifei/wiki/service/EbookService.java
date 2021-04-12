@@ -10,6 +10,7 @@ import com.yifei.wiki.req.EbookSaveReq;
 import com.yifei.wiki.resp.EbookQueryResp;
 import com.yifei.wiki.resp.PageResp;
 import com.yifei.wiki.util.CopyUtil;
+import com.yifei.wiki.util.SnowFlake;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -20,6 +21,8 @@ import java.util.List;
 public class EbookService {
     @Autowired
     private EbookMapper ebookMapper;
+    @Autowired
+    private SnowFlake snowFlake;
 
     public List<Ebook> list(){
         return ebookMapper.selectByExample(null);
@@ -55,9 +58,11 @@ public class EbookService {
 
     public void save(EbookSaveReq req) {
         Ebook ebook = CopyUtil.copy(req, Ebook.class);
-        if(ObjectUtils.isEmpty(req.getId()))
+        if(ObjectUtils.isEmpty(req.getId())){
+            ebook.setId(snowFlake.nextId());
             // 新增
             ebookMapper.insert(ebook);
+        }
         else{
             // 修改
             ebookMapper.updateByPrimaryKey(ebook);

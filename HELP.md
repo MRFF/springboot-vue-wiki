@@ -359,3 +359,8 @@ axios.interceptors.response.use(function(response){
 
 1. 为查询和保存提供不同的请求类响应类，之后开发起来更为灵活。
 2. 如果POST请求提交的是json，那么需要在对应方法的参数前添加@RequestBody，否则会接收不到json。
+
+雪花算法与新增功能
+
+生成id有多种算法，最简单的是自增，还有uuid，还有就是雪花算法。
+
