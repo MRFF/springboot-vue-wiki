@@ -93,6 +93,7 @@
 
 <script lang="ts">
   import { defineComponent, onMounted, ref } from 'vue';
+  import { message } from 'ant-design-vue';
   import axios from 'axios';
 
   export default defineComponent({
@@ -188,7 +189,7 @@
                    size: pagination.value.pageSize
                  });
                } else {
-                 console.log('Failure....');
+                 message.error(response.data.message);
                }
              });
 

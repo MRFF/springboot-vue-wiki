@@ -80,6 +80,7 @@
   import { defineComponent, onMounted, ref } from 'vue';
   import axios from 'axios';
 
+  import { message } from 'ant-design-vue';
   import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
   const listData: Record<string, string>[] = [];
 
@@ -103,8 +104,11 @@
             size: pagination.pageSize
           }
         }).then((response) => {
-                  const data = response.data;
-                  ebooks.value = data.content.records;
+                  if(response.data.success){
+                    ebooks.value = response.data.content.records;
+                  } else {
+                    message.error(response.data.message);
+                  }
                 });
       });
 
@@ -112,7 +116,7 @@
         onChange: (page: number) => {
           console.log(page);
         },
-        pageSize: 100,
+        pageSize: 1000,
       };
 
       const actions: Record<string, string>[] = [
