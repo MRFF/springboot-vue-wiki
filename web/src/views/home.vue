@@ -97,10 +97,14 @@
       const ebooks = ref();
 
       onMounted(() => {
-        axios.get('/ebook/get')
-                .then((response) => {
+        axios.get('/ebook/get', {
+          params: {
+            page: 1,
+            size: pagination.pageSize
+          }
+        }).then((response) => {
                   const data = response.data;
-                  ebooks.value = data.content;
+                  ebooks.value = data.content.records;
                 });
       });
 
@@ -108,7 +112,7 @@
         onChange: (page: number) => {
           console.log(page);
         },
-        pageSize: 3,
+        pageSize: 100,
       };
 
       const actions: Record<string, string>[] = [

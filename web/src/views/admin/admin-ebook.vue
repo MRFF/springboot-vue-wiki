@@ -65,7 +65,7 @@
       const ebooks = ref();
       const pagination = ref({
         current: 1,
-        pageSize: 2,
+        pageSize: 4,
         total: 0
       });
       const loading = ref(false);
@@ -111,13 +111,18 @@
 
       const handleQuery = (params) => {
         loading.value = true;
-        axios.get('/ebook/get', params)
-                .then((response) => {
+        axios.get('/ebook/get', {
+          params: {
+            page: params.page,
+            size: params.size
+          }
+        }).then((response) => {
                   loading.value = false;
                   const data = response.data;
-                  ebooks.value = data.content;
+                  ebooks.value = data.content.records;
                   // 重置分页按钮
                   pagination.value.current = params.page;
+                  pagination.value.total = data.content.total;
                 });
       };
 
@@ -129,7 +134,11 @@
       };
 
       onMounted(() => {
-        handleQuery({});
+        // 页面刚加载，应该查询第一页的数据
+        handleQuery({
+          page: 1,
+          size: pagination.value.pageSize
+        });
       });
 
       return {
