@@ -351,5 +351,5 @@ axios.interceptors.response.use(function(response){
 1. 添加依赖，使用pagehelper插件（pagehelper-spring-boot-starter）。
 2. 分页功能需要查询两次，首先要查询数据总数，然后查询当前页数据。
 3. 每设置一次分页，只对接下来的第一个select查询语句生效。
-4. 分页涉及的四类数据：数据，总条数，页码，每页条数。
+4. 分页请求需要提供页码和每页条数，而响应需要提供当前页列表内容和总行数。
 
