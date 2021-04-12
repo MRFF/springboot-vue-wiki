@@ -53,6 +53,17 @@
 
     </a-layout-content>
   </a-layout>
+
+  <!-- Vue3的template下可以放置多个标签，Vue2则不支持 -->
+  <a-modal
+          title="电子书表单"
+          v-model:visible="modalVisible"
+          :confirm-loading="modalLoading"
+          @ok="handleModalOk"
+  >
+    <p>test</p>
+  </a-modal>
+
 </template>
 
 <script>
@@ -133,6 +144,24 @@
         });
       };
 
+      // 表单
+      const modalVisible = ref(false);
+      const modalLoading = ref(false);
+      const handleModalOk = () => {
+        modalLoading.value = true;
+        setTimeout(() => {
+          modalVisible.value = false;
+          modalLoading.value = false;
+        }, 2000);
+      };
+
+      /**
+       * 点击编辑
+       */
+      const edit = (record) => {
+        modalVisible.value = true;
+      };
+
       onMounted(() => {
         // 页面刚加载，应该查询第一页的数据
         handleQuery({
@@ -146,7 +175,12 @@
         pagination,
         columns,
         loading,
-        handleTableChange
+        handleTableChange,
+
+        modalVisible,
+        modalLoading,
+        handleModalOk,
+        edit,
       };
 
     }
