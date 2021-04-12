@@ -355,3 +355,7 @@ axios.interceptors.response.use(function(response){
 
 为编辑按钮添加模态对话框，在对话框内以form展示当前行数据
 
+后端增加编辑功能
+
+1. 为查询和保存提供不同的请求类响应类，之后开发起来更为灵活。
+2. 如果POST请求提交的是json，那么需要在对应方法的参数前添加@RequestBody，否则会接收不到json。

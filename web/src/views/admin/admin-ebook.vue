@@ -69,12 +69,18 @@
       <a-form-item label="名称">
         <a-input v-model:value="ebook.name" />
       </a-form-item>
-      <a-form-item label="分类">
-        <a-cascader
-                v-model:value="categoryIds"
-                :field-names="{ label: 'name', value: 'id', children: 'children' }"
-                :options="level1"
-        />
+<!--      <a-form-item label="分类">-->
+<!--        <a-cascader-->
+<!--                v-model:value="categoryIds"-->
+<!--                :field-names="{ label: 'name', value: 'id', children: 'children' }"-->
+<!--                :options="level1"-->
+<!--        />-->
+<!--      </a-form-item>-->
+      <a-form-item label="分类1">
+        <a-input v-model:value="ebook.category1Id" />
+      </a-form-item>
+      <a-form-item label="分类2">
+        <a-input v-model:value="ebook.category2Id" />
       </a-form-item>
       <a-form-item label="描述">
         <a-input v-model:value="ebook.description" type="textarea" />
@@ -153,7 +159,7 @@
                   // 重置分页按钮
                   pagination.value.current = params.page;
                   pagination.value.total = data.content.total;
-                });
+        });
       };
 
       const handleTableChange = (pagination) => {
@@ -170,10 +176,21 @@
       const ebook = ref({});
       const handleModalOk = () => {
         modalLoading.value = true;
-        setTimeout(() => {
-          modalVisible.value = false;
-          modalLoading.value = false;
-        }, 2000);
+        axios.post('/ebook/save', ebook.value)
+             .then((response) => {
+               modalLoading.value = false;
+               if(response.data.success){
+                 modalVisible.value = false;
+
+                 handleQuery({
+                   page: pagination.value.current,
+                   size: pagination.value.pageSize
+                 });
+               } else {
+                 console.log('Failure....');
+               }
+             });
+
       };
 
       /**
