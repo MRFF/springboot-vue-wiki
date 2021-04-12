@@ -1,12 +1,12 @@
 package com.yifei.wiki.req;
 
+
 /**
  * 封装EBook的请求参数，只保留id和name两个字段
  * 为了支持分页，继承了PageReq类
  */
 public class EbookQueryReq extends PageReq{
     private Long id;
-
     private String name;
 
 

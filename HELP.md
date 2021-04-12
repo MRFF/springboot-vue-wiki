@@ -366,3 +366,20 @@ axios.interceptors.response.use(function(response){
 
 实现删除功能
 
+对于前端提交的删除请求，id放在url中，形如/ebook/delete/123456，后端在获取时，要在参数中加@PathVariable注解。
+
+遇到的问题：电子书id是long型，有17位，传给前段时，由于js精度有限，超过16位的部分都变为0，于是删除时，id与数据库中的id不匹配。在响应类的id属性上，加上@JsonSerialize注解，转为字符串即可。
+
+```java
+public class EbookQueryResp {
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long id;
+    ...
+```
+
+集成Validation做参数校验
+
+1. 引入依赖，spring-boot-starter-validation。注意引入pom依赖后，即便是热部署，也要重启一下，否则即便代码在IDE不报错，应用还是无法使用。
+2. 在需要校验的请求类属性，添加注解并设置提示信息，如@NotNull, @Max
+3. 在用到请求类的Controller参数前，添加注解
+4. 处理校验时产生的BindException异常，使异常不至于又影响前端，并让返回给前端的值保持格式统一

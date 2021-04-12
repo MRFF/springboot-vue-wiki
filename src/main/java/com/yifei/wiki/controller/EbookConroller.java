@@ -10,6 +10,7 @@ import com.yifei.wiki.service.EbookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -27,7 +28,7 @@ public class EbookConroller {
     }
 
     @GetMapping("/get")
-    public CommonResp get(EbookQueryReq req){
+    public CommonResp get(@Valid EbookQueryReq req){
         CommonResp<PageResp<EbookQueryResp>> resp = new CommonResp<>();
         PageResp<EbookQueryResp> pageResp = ebookService.get(req);
         resp.setContent(pageResp);
@@ -36,7 +37,7 @@ public class EbookConroller {
 
     // 如果POST请求提交的是json形式，而非form，则必须在方法前添加@RequestBody，否则接收不到json
     @PostMapping("/save")
-    public CommonResp save(@RequestBody EbookSaveReq req){
+    public CommonResp save(@Valid @RequestBody EbookSaveReq req){
         CommonResp resp = new CommonResp();
         ebookService.save(req);
         return resp;
