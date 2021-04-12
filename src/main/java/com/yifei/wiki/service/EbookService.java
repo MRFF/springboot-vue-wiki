@@ -5,16 +5,14 @@ import com.github.pagehelper.PageInfo;
 import com.yifei.wiki.domain.Ebook;
 import com.yifei.wiki.domain.EbookExample;
 import com.yifei.wiki.mapper.EbookMapper;
-import com.yifei.wiki.req.EbookReq;
-import com.yifei.wiki.resp.EbookResp;
+import com.yifei.wiki.req.EbookQueryReq;
+import com.yifei.wiki.resp.EbookQueryResp;
 import com.yifei.wiki.resp.PageResp;
 import com.yifei.wiki.util.CopyUtil;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,7 +25,7 @@ public class EbookService {
     }
 
     // 参数名一致时，会自动找到类中的属性映射
-    public PageResp<EbookResp> get(EbookReq req){
+    public PageResp<EbookQueryResp> get(EbookQueryReq req){
         EbookExample example = new EbookExample();
         EbookExample.Criteria criteria = example.createCriteria();
         // 动态SQL，如果前端没有传参数，就返回所有的值
@@ -40,10 +38,10 @@ public class EbookService {
 
         // 获取分页后的信息，可以获取结果总条数
         PageInfo<Ebook> pageInfo = new PageInfo<>(ebooks);
-        PageResp<EbookResp> pageResp = new PageResp<>();
+        PageResp<EbookQueryResp> pageResp = new PageResp<>();
 
         pageResp.setTotal(pageInfo.getTotal());
-        pageResp.setRecords(CopyUtil.copyList(ebooks, EbookResp.class));
+        pageResp.setRecords(CopyUtil.copyList(ebooks, EbookQueryResp.class));
 //        List<EbookResp> respList = new ArrayList<>();
 //        for (Ebook ebook : ebooks) {
 //            EbookResp ebookResp = new EbookResp();

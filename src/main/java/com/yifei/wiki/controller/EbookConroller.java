@@ -1,9 +1,9 @@
 package com.yifei.wiki.controller;
 
 import com.yifei.wiki.domain.Ebook;
-import com.yifei.wiki.req.EbookReq;
+import com.yifei.wiki.req.EbookQueryReq;
 import com.yifei.wiki.resp.CommonResp;
-import com.yifei.wiki.resp.EbookResp;
+import com.yifei.wiki.resp.EbookQueryResp;
 import com.yifei.wiki.resp.PageResp;
 import com.yifei.wiki.service.EbookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +28,9 @@ public class EbookConroller {
     }
 
     @GetMapping("/get")
-    public CommonResp get(EbookReq req){
-        CommonResp<PageResp<EbookResp>> resp = new CommonResp<>();
-        PageResp<EbookResp> pageResp = ebookService.get(req);
+    public CommonResp get(EbookQueryReq req){
+        CommonResp<PageResp<EbookQueryResp>> resp = new CommonResp<>();
+        PageResp<EbookQueryResp> pageResp = ebookService.get(req);
         resp.setContent(pageResp);
         return resp;
     }

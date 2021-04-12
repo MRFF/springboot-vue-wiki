@@ -140,6 +140,7 @@
 
       const handleQuery = (params) => {
         loading.value = true;
+        // GET请求需要传入params参数，POST请求则无此限制
         axios.get('/ebook/get', {
           params: {
             page: params.page,

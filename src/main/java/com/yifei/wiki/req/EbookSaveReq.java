@@ -1,6 +1,6 @@
-package com.yifei.wiki.resp;
+package com.yifei.wiki.req;
 
-public class EbookResp {
+public class EbookSaveReq{
     private Long id;
 
     private String name;
