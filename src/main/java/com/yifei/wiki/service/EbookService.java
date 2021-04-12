@@ -6,6 +6,7 @@ import com.yifei.wiki.domain.Ebook;
 import com.yifei.wiki.domain.EbookExample;
 import com.yifei.wiki.mapper.EbookMapper;
 import com.yifei.wiki.req.EbookQueryReq;
+import com.yifei.wiki.req.EbookSaveReq;
 import com.yifei.wiki.resp.EbookQueryResp;
 import com.yifei.wiki.resp.PageResp;
 import com.yifei.wiki.util.CopyUtil;
@@ -50,5 +51,16 @@ public class EbookService {
 //        }
 
         return pageResp;
+    }
+
+    public void save(EbookSaveReq req) {
+        Ebook ebook = CopyUtil.copy(req, Ebook.class);
+        if(ObjectUtils.isEmpty(req.getId()))
+            // 新增
+            ebookMapper.insert(ebook);
+        else{
+            // 修改
+            ebookMapper.updateByPrimaryKey(ebook);
+        }
     }
 }
