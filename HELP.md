@@ -341,5 +341,9 @@ axios.interceptors.response.use(function(response){
 前端要增加一个页面，要做以下几步：
 
 1. 创建页面，即在views文件夹下创建vue文件。
+
 2. 编写路由，即在router文件夹内的文件中添加路由映射。
-3. 添加跳转，即在页面中添加
+
+3. 添加跳转，即在页面中添加<router-link>标签，跳转到新增页。
+
+   
