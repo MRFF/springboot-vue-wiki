@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Spring框架特有的拦截器
+ * Spring框架特有的拦截器，常用于d登录/权限校验，日志打印
  */
 @Component
 public class TrackTimeInterceptor implements HandlerInterceptor {

@@ -341,9 +341,15 @@ axios.interceptors.response.use(function(response){
 前端要增加一个页面，要做以下几步：
 
 1. 创建页面，即在views文件夹下创建vue文件。
-
 2. 编写路由，即在router文件夹内的文件中添加路由映射。
-
 3. 添加跳转，即在页面中添加<router-link>标签，跳转到新增页。
 
-   
+添加表格
+
+使用PageHelper实现后端分页
+
+1. 添加依赖，使用pagehelper插件（pagehelper-spring-boot-starter）。
+2. 分页功能需要查询两次，首先要查询数据总数，然后查询当前页数据。
+3. 每设置一次分页，只对接下来的第一个select查询语句生效。
+4. 分页涉及的四类数据：数据，总条数，页码，每页条数。
+
