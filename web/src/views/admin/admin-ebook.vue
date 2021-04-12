@@ -42,7 +42,7 @@
                     title="删除后不可恢复，确认删除?"
                     ok-text="是"
                     cancel-text="否"
-                    @confirm="handleDelete(record.id)"
+                    @confirm="del(record.id)"
             >
               <a-button type="danger">
                 删除
@@ -91,7 +91,7 @@
 
 </template>
 
-<script>
+<script lang="ts">
   import { defineComponent, onMounted, ref } from 'vue';
   import axios from 'axios';
 
@@ -145,7 +145,7 @@
         }
       ];
 
-      const handleQuery = (params) => {
+      const handleQuery = (params: any) => {
         loading.value = true;
         // GET请求需要传入params参数，POST请求则无此限制
         axios.get('/ebook/get', {
@@ -163,7 +163,7 @@
         });
       };
 
-      const handleTableChange = (pagination) => {
+      const handleTableChange = (pagination : any) => {
         handleQuery({
           page: pagination.current,
           size: pagination.pageSize
@@ -197,7 +197,7 @@
       /**
        * 编辑
        */
-      const edit = (record) => {
+      const edit = (record: any) => {
         modalVisible.value = true;
         ebook.value = record;
       };
@@ -207,7 +207,23 @@
        */
       const add = () => {
         modalVisible.value = true;
+        modalLoading.value = false;
         ebook.value = {};
+      };
+
+      /**
+       * 删除
+       */
+      const del = (id : string) => {
+        axios.delete('/ebook/delete/' + id)
+             .then((response) => {
+               if(response.data.success){
+                 handleQuery({
+                   page: pagination.value.current,
+                   size: pagination.value.pageSize
+                 });
+               }
+        });
       };
 
       onMounted(() => {
@@ -227,6 +243,7 @@
 
         edit,
         add,
+        del,
 
         modalVisible,
         modalLoading,
