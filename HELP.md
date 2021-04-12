@@ -324,3 +324,12 @@ axios.interceptors.response.use(function(response){
 });
 ```
 
+
+
+#### 如何在后端拦截请求，以统计接口访问耗时？
+
+在Spring中要拦截请求，有三种方法：
+
+1. 借助Servlet原生支持的Filter过滤器。
+2. 借助Sping的AOP机制。
+3. 借助SpringBoot的拦截器。
