@@ -61,7 +61,25 @@
           :confirm-loading="modalLoading"
           @ok="handleModalOk"
   >
-    <p>test</p>
+    <!-- 模态框内的表单，用以编辑 -->
+    <a-form :model="ebook" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+      <a-form-item label="封面">
+        <a-input v-model:value="ebook.cover" />
+      </a-form-item>
+      <a-form-item label="名称">
+        <a-input v-model:value="ebook.name" />
+      </a-form-item>
+      <a-form-item label="分类">
+        <a-cascader
+                v-model:value="categoryIds"
+                :field-names="{ label: 'name', value: 'id', children: 'children' }"
+                :options="level1"
+        />
+      </a-form-item>
+      <a-form-item label="描述">
+        <a-input v-model:value="ebook.description" type="textarea" />
+      </a-form-item>
+    </a-form>
   </a-modal>
 
 </template>
@@ -144,9 +162,11 @@
         });
       };
 
-      // 表单
+      // 编辑对话框用到的变量
       const modalVisible = ref(false);
       const modalLoading = ref(false);
+      // 用以存储当前行的数据
+      const ebook = ref({});
       const handleModalOk = () => {
         modalLoading.value = true;
         setTimeout(() => {
@@ -160,6 +180,7 @@
        */
       const edit = (record) => {
         modalVisible.value = true;
+        ebook.value = record;
       };
 
       onMounted(() => {
@@ -181,6 +202,7 @@
         modalLoading,
         handleModalOk,
         edit,
+        ebook,
       };
 
     }
