@@ -6,10 +6,11 @@
             :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
 
-      <div class="about">
-        <h1>电子书管理</h1>
-      </div>
-
+      <p>
+        <a-button type="primary" @click="add">
+          新增
+        </a-button>
+      </p>
       <a-table
               :columns="columns"
               :row-key="record => record.id"
@@ -194,11 +195,19 @@
       };
 
       /**
-       * 点击编辑
+       * 编辑
        */
       const edit = (record) => {
         modalVisible.value = true;
         ebook.value = record;
+      };
+
+      /**
+       * 新增
+       */
+      const add = () => {
+        modalVisible.value = true;
+        ebook.value = {};
       };
 
       onMounted(() => {
@@ -216,10 +225,12 @@
         loading,
         handleTableChange,
 
+        edit,
+        add,
+
         modalVisible,
         modalLoading,
         handleModalOk,
-        edit,
         ebook,
       };
 
