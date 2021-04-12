@@ -7,9 +7,21 @@
     >
 
       <p>
-        <a-button type="primary" @click="add">
-          新增
-        </a-button>
+        <a-form layout="inline" :model="searchParams">
+          <a-form-item>
+            <a-input v-model:value="searchParams.name" placeholder="名称"/>
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" @click="handleQuery({page:1, size: pagination.pageSize, name: searchParams.name})">
+              查询
+            </a-button>
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" @click="add">
+              新增
+            </a-button>
+          </a-form-item>
+        </a-form>
       </p>
       <a-table
               :columns="columns"
@@ -146,13 +158,16 @@
         }
       ];
 
+      const searchParams = ref({});
+
       const handleQuery = (params: any) => {
         loading.value = true;
         // GET请求需要传入params参数，POST请求则无此限制
         axios.get('/ebook/get', {
           params: {
             page: params.page,
-            size: params.size
+            size: params.size,
+            name: params.name,
           }
         }).then((response) => {
                   loading.value = false;
@@ -250,6 +265,9 @@
         modalLoading,
         handleModalOk,
         ebook,
+
+        searchParams,
+        handleQuery,
       };
 
     }

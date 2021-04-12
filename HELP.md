@@ -380,6 +380,56 @@ public class EbookQueryResp {
 集成Validation做参数校验
 
 1. 引入依赖，spring-boot-starter-validation。注意引入pom依赖后，即便是热部署，也要重启一下，否则即便代码在IDE不报错，应用还是无法使用。
-2. 在需要校验的请求类属性，添加注解并设置提示信息，如@NotNull, @Max
-3. 在用到请求类的Controller参数前，添加注解
+
+2. 在需要校验的请求类属性，添加注解并设置提示信息，如@NotNull， @Max。此处就显示出将不同的请求类分开的好处了，在添加注解时，只会对被注解过的请求类起作用。
+
+   ```java
+   public class PageReq {
+       @NotNull(message = "【页码】不能为空")
+       private int page;
+   
+       @Max(value = 1000, message = "【每页条数】不能超过1000")
+       @NotNull(message = "【每页条数】不能为空")
+       private int size;
+       ...
+   ```
+
+3. 在用到请求类的Controller参数前，添加注解@Valid。
+
+   ```java
+   @PostMapping("/save")
+   public CommonResp save(@Valid @RequestBody EbookSaveReq req){
+       CommonResp resp = new CommonResp<>();
+       ebookService.save(req);
+       return resp;
+   }
+   ```
+
 4. 处理校验时产生的BindException异常，使异常不至于又影响前端，并让返回给前端的值保持格式统一
+
+   ```java
+   // controller/ControllerExceptionHandler.java
+   @ControllerAdvice
+   public class ControllerExceptionHandler {
+   
+       private static final Logger LOG = LoggerFactory.getLogger(ControllerExceptionHandler.class);
+       /**
+        * 校验异常统一处理
+        * @param e
+        * @return
+        */
+       @ExceptionHandler(value = BindException.class)
+       @ResponseBody
+       public CommonResp validExceptionHandler(BindException e) {
+           CommonResp commonResp = new CommonResp();
+           LOG.warn("参数校验失败：{}", e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+           commonResp.setSuccess(false);
+           commonResp.setMessage(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+           return commonResp;
+       }
+   }
+   ```
+
+
+
+增加名字查询 
