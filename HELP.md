@@ -447,3 +447,29 @@ axios.interceptors.response.use(function(response){
 去除分页管理中的分页，并改为树形表格展示 
 
 分类编辑功能优化：改父分类为下拉框选择
+
+电子书管理页面的分类改为级联选择
+
+1. 编辑对话框中的分类一和分类二input要改用<a-cascade>
+
+   - 联级选择的value形如[category_1, category_2]，因此要再定义categoryIds来代替原来的category1Id和category2Id。
+   - level1用来存放所有分类信息，获取分类信息的请求可以在onMounted中发出。
+
+   ```html
+   <a-cascader
+       v-model:value="categoryIds"
+       :field-names="{ label:'name', value:'id', children: 'children' }"
+       :options="level1"
+   />
+   ```
+
+2. 管理页面的表格改为显示分类一/分类二，而不是两个分类各占一列
+
+
+
+
+
+遇到的问题：
+
+1. 分类表中的初始化数据，id都为三位，如100，可是在表格中的代表当前行数据的record，其id却似乎被截断了，变为了1，2，很奇怪，找了半天，不知道是哪里发生了转换。后来才发现，是自己的电子书表中，初始化category1_id和category2_id时，是随便填的2和3。还是数据的问题。
+2. 
