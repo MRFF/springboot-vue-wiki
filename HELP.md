@@ -41,7 +41,7 @@ GET http://localhost:8080/hello
 
 SpringBoot会自动读取放在resources目录及其子目录下的application配置，配置文件形式可以是.properties，也可以是.yaml。熟悉哪种用哪种，也可在网上对二者互相转换。而要在代码中使用配置中的属性，可使用@Value("${prop : defaultVal}"注解使用。
 
-#### 如何继承热部署？
+#### 如何集成热部署？
 
 开发过程，每有一点更改想要测试，都需要重新启动应用。而要做到边开发边测试，可以继承热部署。开启热部署分三步走：
 
@@ -96,7 +96,7 @@ SpringBoot会自动读取放在resources目录及其子目录下的application�
 5.  编写相应的service和controller。service中定义mapper属性，并使用@Autowired自动装配；对service使用@Service注册后，在controller中定义service属性，并使用@Autowired自动装配。使用@Autowired等于是让spring托管对象，我们不必去new对象。@Service的意义类似，也是让spring为我们在容器中创建该对象，好在其它地方使用。
 6. 
 
-#### 如何使用mybatis-generator插件自动生成代码？
+#### 如何使用mybatis-generator插件自动生成持久层代码？
 
 1. 在依赖插件中引入mybatis-generator-maven-plugin，并编写好插件配置文件。要提供数据库连接字段，要对哪个表生成，代码生成后各自存放的位置等。
 
@@ -307,6 +307,8 @@ import { defineComponent, onMounted, ref } from 'vue';
    axios.defaults.baseURL = process.env.VUE_APP_SERVER;
    ```
 
+#### 前端如何拦截请求？
+
 使用axios拦截器统一打印日志
 
 ```typescript
@@ -338,46 +340,37 @@ axios.interceptors.response.use(function(response){
 
 ## 6
 
-前端要增加一个页面，要做以下几步：
+本章主要完成了电子书管理页面的前后端功能开发，包括分页、新增、查询（按名字）、删除、编辑、校验等功能。
+
+#### 前端增加一个页面，要做以下几步：
 
 1. 创建页面，即在views文件夹下创建vue文件。
 2. 编写路由，即在router文件夹内的文件中添加路由映射。
 3. 添加跳转，即在页面中添加<router-link>标签，跳转到新增页。
 
-添加表格
-
-使用PageHelper实现后端分页
+#### 如何使用PageHelper实现后端分页？
 
 1. 添加依赖，使用pagehelper插件（pagehelper-spring-boot-starter）。
 2. 分页功能需要查询两次，首先要查询数据总数，然后查询当前页数据。
 3. 每设置一次分页，只对接下来的第一个select查询语句生效。
 4. 分页请求需要提供页码和每页条数，而响应需要提供当前页列表内容和总行数。因此，再为分页请求添加分页请求类，为分页响应增加分页响应类。
 
-为编辑按钮添加模态对话框，在对话框内以form展示当前行数据
+#### 后端开发增删改查的过程中有哪些需要注意的点？
 
-后端增加编辑功能
+后端增加编辑功能时：
 
 1. 为查询和保存提供不同的请求类响应类，之后开发起来更为灵活。
 2. 如果POST请求提交的是json，那么需要在对应方法的参数前添加@RequestBody，否则会接收不到json。
 
-雪花算法与新增功能
+生成id时用到了雪花算法：
 
 生成id有多种算法，最简单的是自增，还有uuid，还有就是雪花算法。而雪花算法是根据时间戳、数据中心、机器标识、序列号（当前时间内的第几条记录）共同生成唯一的id，它可以保证多数据中心多机器的环境下并发请求都能生成唯一的id。
 
-实现删除功能
+实现删除功能时
 
 对于前端提交的删除请求，id放在url中，形如/ebook/delete/123456，后端在获取时，要在参数中加@PathVariable注解。
 
-遇到的问题：电子书id是long型，有17位，传给前段时，由于js精度有限，超过16位的部分都变为0，于是删除时，id与数据库中的id不匹配。在响应类的id属性上，加上@JsonSerialize注解，转为字符串即可。
-
-```java
-public class EbookQueryResp {
-    @JsonSerialize(using = ToStringSerializer.class)
-    private Long id;
-    ...
-```
-
-集成Validation做参数校验
+#### 如何在后端集成Validation做参数校验？
 
 1. 引入依赖，spring-boot-starter-validation。注意引入pom依赖后，即便是热部署，也要重启一下，否则即便代码在IDE不报错，应用还是无法使用。
 
@@ -430,6 +423,20 @@ public class EbookQueryResp {
    }
    ```
 
+#### 遇到了哪些Bug？
+
+1. 电子书id是long型，有17位，传给前段时，由于js精度有限，超过16位的部分都变为0，于是删除时，id与数据库中的id不匹配。在响应类的id属性上，加上@JsonSerialize注解，转为字符串即可。
+
+   ```java
+   public class EbookQueryResp {
+       @JsonSerialize(using = ToStringSerializer.class)
+       private Long id;
+       ...
+   ```
+
+2. 编辑电子书时，由于是响应式数据，列表中的值会和输入值同步，即便退出编辑框也无法还愿，解决办法是给编辑框中的列赋值时，复制一份放进去，而不是用原值。
 
 
-增加名字查询 
+
+## 7
+
