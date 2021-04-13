@@ -465,6 +465,10 @@ axios.interceptors.response.use(function(response){
 
 2. 管理页面的表格改为显示分类一/分类二，而不是两个分类各占一列
 
+首页显示分类菜单
+
+点击分类菜单后，显示该分类下的电子书
+
 
 
 
