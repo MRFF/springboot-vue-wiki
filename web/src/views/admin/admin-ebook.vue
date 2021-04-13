@@ -250,6 +250,8 @@
       const level1 = ref();
       let categorys: any;
       const handleQueryCategory = () => {
+        // 如果不清空现有数据，编辑保存重新加载数据后，列表显示的还是编辑前的数据
+        ebooks.value = [];
         axios.get('/category/all').then((response) => {
           if(response.data.success){
             level1.value= [];
