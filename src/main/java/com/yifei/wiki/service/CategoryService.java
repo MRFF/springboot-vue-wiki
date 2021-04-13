@@ -24,13 +24,19 @@ public class CategoryService {
     @Autowired
     private SnowFlake snowFlake;
 
-    public List<Category> list(){
-        return categoryMapper.selectByExample(null);
+    public List<CategoryQueryResp> all(){
+        CategoryExample example = new CategoryExample();
+        example.setOrderByClause("sort asc");
+        List<Category> categorys = categoryMapper.selectByExample(example);
+        List<CategoryQueryResp> categoryQueryResps = CopyUtil.copyList(categorys, CategoryQueryResp.class);
+        return categoryQueryResps;
     }
+
 
     // 参数名一致时，会自动找到类中的属性映射
     public PageResp<CategoryQueryResp> get(CategoryQueryReq req){
         CategoryExample example = new CategoryExample();
+        example.setOrderByClause("sort asc");
         CategoryExample.Criteria criteria = example.createCriteria();
         if(!ObjectUtils.isEmpty(req.getName()))
             criteria.andNameLike("%" + req.getName() + "%");

@@ -19,10 +19,10 @@ public class CategoryConroller {
     @Autowired
     private CategoryService categoryService;
 
-    @GetMapping("/list")
-    public CommonResp<List<Category>> list(){
-        CommonResp<List<Category>> resp = new CommonResp<>();
-        List<Category> categorys = categoryService.list();
+    @GetMapping("/all")
+    public CommonResp<List<CategoryQueryResp>> all(){
+        CommonResp<List<CategoryQueryResp>> resp = new CommonResp<>();
+        List<CategoryQueryResp> categorys = categoryService.all();
         resp.setContent(categorys);
         return resp;
     }

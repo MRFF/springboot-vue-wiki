@@ -7,15 +7,15 @@
     >
 
       <p>
-        <a-form layout="inline" :model="searchParams">
-          <a-form-item>
-            <a-input v-model:value="searchParams.name" placeholder="名称"/>
-          </a-form-item>
-          <a-form-item>
-            <a-button type="primary" @click="handleQuery({page:1, size: pagination.pageSize, name: searchParams.name})">
-              查询
-            </a-button>
-          </a-form-item>
+        <a-form layout="inline"> <!--:model=""> -->
+<!--          <a-form-item>-->
+<!--            <a-input v-model:value="searchParams.name" placeholder="名称"/>-->
+<!--          </a-form-item>-->
+<!--          <a-form-item>-->
+<!--            <a-button type="primary" @click="handleQuery({page:1, size: pagination.pageSize, name: searchParams.name})">-->
+<!--              查询-->
+<!--            </a-button>-->
+<!--          </a-form-item>-->
           <a-form-item>
             <a-button type="primary" @click="add">
               新增
@@ -27,9 +27,8 @@
               :columns="columns"
               :row-key="record => record.id"
               :data-source="categorys"
-              :pagination="pagination"
               :loading="loading"
-              @change="handleTableChange"
+              :pagination="false"
       >
         <template v-slot:action="{ text, record }">
           <a-space size="small">
@@ -93,11 +92,6 @@
     name: 'AdminCategory',
     setup: function () {
       const categorys = ref();
-      const pagination = ref({
-        current: 1,
-        pageSize: 4,
-        total: 0
-      });
       const loading = ref(false);
 
       const columns = [
@@ -125,31 +119,18 @@
 
       const searchParams = ref({});
 
-      const handleQuery = (params: any) => {
+      const handleQuery = () => {
         loading.value = true;
-        // GET请求需要传入params参数，POST请求则无此限制
-        axios.get('/category/get', {
-          params: {
-            page: params.page,
-            size: params.size,
-            name: params.name,
-          }
-        }).then((response) => {
+        axios.get('/category/all').then((response) => {
                   loading.value = false;
-                  const data = response.data;
-                  categorys.value = data.content.records;
-                  // 重置分页按钮
-                  pagination.value.current = params.page;
-                  pagination.value.total = data.content.total;
+                  if(response.data.success){
+                    categorys.value = response.data.content;
+                  } else{
+                    message.error("分类信息加载失败！");
+                  }
         });
       };
 
-      const handleTableChange = (pagination : any) => {
-        handleQuery({
-          page: pagination.current,
-          size: pagination.pageSize
-        });
-      };
 
       // 编辑对话框用到的变量
       const modalVisible = ref(false);
@@ -164,10 +145,7 @@
                if(response.data.success){
                  modalVisible.value = false;
 
-                 handleQuery({
-                   page: pagination.value.current,
-                   size: pagination.value.pageSize
-                 });
+                 handleQuery();
                } else {
                  message.error(response.data.message);
                }
@@ -199,28 +177,20 @@
         axios.delete('/category/delete/' + id)
              .then((response) => {
                if(response.data.success){
-                 handleQuery({
-                   page: pagination.value.current,
-                   size: pagination.value.pageSize
-                 });
+                 handleQuery();
                }
         });
       };
 
       onMounted(() => {
         // 页面刚加载，应该查询第一页的数据
-        handleQuery({
-          page: 1,
-          size: pagination.value.pageSize
-        });
+        handleQuery();
       });
 
       return {
         categorys,
-        pagination,
         columns,
         loading,
-        handleTableChange,
 
         edit,
         add,
