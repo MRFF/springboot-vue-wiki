@@ -36,6 +36,9 @@ public class EbookService {
         if(!ObjectUtils.isEmpty(req.getName()))
             criteria.andNameLike("%" + req.getName() + "%");
 
+        if(!ObjectUtils.isEmpty(req.getCategory2Id()))
+            criteria.andCategory2IdEqualTo(req.getCategory2Id());
+
         // 使用分页插件，实现分页。每次设置分页，都只会生效一次，因此注意要与分页查询语句紧邻，中间不能有其它查询
         PageHelper.startPage(req.getPage(), req.getSize());
         List<Ebook> ebooks = ebookMapper.selectByExample(example);

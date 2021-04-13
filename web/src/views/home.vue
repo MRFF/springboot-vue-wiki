@@ -85,21 +85,25 @@
     // vue3新增，初始化方法
     setup: function () {
       const ebooks = ref();
-
-      onMounted(() => {
-        handleQueryCategory();
+      const handleQuery = () => {
         axios.get('/ebook/get', {
           params: {
             page: 1,
-            size: pagination.pageSize
+            size: pagination.pageSize,
+            category2Id: category2Id,
           }
         }).then((response) => {
-                  if(response.data.success){
-                    ebooks.value = response.data.content.records;
-                  } else {
-                    message.error(response.data.message);
-                  }
-                });
+          if(response.data.success){
+            ebooks.value = response.data.content.records;
+          } else {
+            message.error(response.data.message);
+          }
+        });
+      };
+
+      let category2Id = 0;
+      onMounted(() => {
+        handleQueryCategory();
       });
 
       const pagination = {
@@ -134,6 +138,8 @@
         if (value.key === 'welcome') {
           ifShowWelcome.value = true;
         } else {
+          category2Id = value.key;
+          handleQuery();
           ifShowWelcome.value = false;
         }
       };
