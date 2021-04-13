@@ -13,7 +13,6 @@ public class CategorySaveReq {
     private String name;
 
     @NotNull(message = "【排序】不能为空")
-    @NotEmpty(message = "【排序】不能为空")
     private Integer sort;
 
     public Long getId() {
