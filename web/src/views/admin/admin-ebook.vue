@@ -254,6 +254,12 @@
         ebooks.value = [];
         axios.get('/category/all').then((response) => {
           if(response.data.success){
+
+            handleQuery({
+              page: 1,
+              size: pagination.value.pageSize
+            });
+
             level1.value= [];
             categorys = response.data.content;
             console.log("原始分类数据: ", categorys);
@@ -291,10 +297,7 @@
       onMounted(() => {
         handleQueryCategory();
         // 页面刚加载，应该查询第一页的数据
-        handleQuery({
-          page: 1,
-          size: pagination.value.pageSize
-        });
+
       });
 
       return {
