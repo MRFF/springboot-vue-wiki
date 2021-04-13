@@ -26,7 +26,7 @@
       <a-table
               :columns="columns"
               :row-key="record => record.id"
-              :data-source="categorys"
+              :data-source="level1"
               :loading="loading"
               :pagination="false"
       >
@@ -117,7 +117,8 @@
         }
       ];
 
-      const searchParams = ref({});
+      // const searchParams = ref({});
+      const level1 = ref();
 
       const handleQuery = () => {
         loading.value = true;
@@ -125,6 +126,9 @@
                   loading.value = false;
                   if(response.data.success){
                     categorys.value = response.data.content;
+
+                    level1.value = [];
+                    level1.value = Tool.array2Tree(categorys.value,0);
                   } else{
                     message.error("分类信息加载失败！");
                   }
@@ -189,6 +193,7 @@
 
       return {
         categorys,
+        level1,
         columns,
         loading,
 
@@ -201,7 +206,6 @@
         handleModalOk,
         category,
 
-        searchParams,
         handleQuery,
       };
 
