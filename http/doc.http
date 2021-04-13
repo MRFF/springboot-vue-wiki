@@ -1,0 +1,18 @@
+GET http://localhost:8081/doc/list
+
+
+###
+
+GET http://localhost:8082/doc/get
+
+###
+
+GET http://localhost:8082/doc/get?page=1&size=3
+
+###
+
+GET http://localhost:8082/doc/get?life=vie
+
+###
+
+GET http://localhost:8082/doc/all

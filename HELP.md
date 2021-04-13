@@ -479,3 +479,5 @@ axios.interceptors.response.use(function(response){
 ## 8
 
 创建文档表，并生成持久层代码
+
+完成前后端文档表的增删改查功能
