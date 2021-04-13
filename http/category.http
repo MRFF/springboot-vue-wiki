@@ -1,0 +1,14 @@
+GET http://localhost:8081/category/list
+
+
+###
+
+GET http://localhost:8082/category/get
+
+###
+
+GET http://localhost:8082/category/get?page=1&size=3
+
+###
+
+GET http://localhost:8082/category/get?life=vie
