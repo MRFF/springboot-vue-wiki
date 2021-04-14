@@ -6,7 +6,7 @@
             :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
 
-      <a-row>
+      <a-row :gutter="24">
         <a-col :span="8">
           <p>
             <a-form layout="inline"> <!--:model=""> -->
@@ -31,10 +31,14 @@
                   :data-source="level1"
                   :loading="loading"
                   :pagination="false"
+                  size="small"
           >
+            <template #name="{text, record}">
+              {{record.sort}} {{text}}
+            </template>
             <template v-slot:action="{ text, record }">
               <a-space size="small">
-                <a-button type="primary" @click="edit(record)">
+                <a-button type="primary" @click="edit(record)" size="small">
                   编辑
                 </a-button>
                 <a-popconfirm
@@ -43,7 +47,7 @@
                         cancel-text="否"
                         @confirm="showConfirm(record.id)"
                 >
-                  <a-button type="danger">
+                  <a-button type="danger" size="small">
                     删除
                   </a-button>
                 </a-popconfirm>
@@ -53,11 +57,20 @@
 
         </a-col>
         <a-col :span="16">
-          <a-form :model="doc" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
-            <a-form-item label="名称">
-              <a-input v-model:value="doc.name" />
+          <p>
+            <a-form layout="inline">
+              <a-form-item>
+                <a-button type="primary" @click="handleSave()">
+                  保存
+                </a-button>
+              </a-form-item>
+            </a-form>
+          </p>
+          <a-form :model="doc" layout="vertical">
+            <a-form-item>
+              <a-input v-model:value="doc.name" placeholder="文档名"/>
             </a-form-item>
-            <a-form-item label="父分类">
+            <a-form-item>
 
               <a-tree-select
                       v-model:value="doc.parent"
@@ -71,10 +84,10 @@
               />
 
             </a-form-item>
-            <a-form-item label="排序">
-              <a-input v-model:value="doc.sort" type="textarea" />
+            <a-form-item>
+              <a-input v-model:value="doc.sort" type="textarea" placeholder="排序"/>
             </a-form-item>
-            <a-form-item label="内容">
+            <a-form-item>
               <div id="content"></div>
             </a-form-item>
           </a-form>
@@ -84,15 +97,7 @@
     </a-layout-content>
   </a-layout>
 
-  <!-- Vue3的template下可以放置多个标签，Vue2则不支持 -->
-  <a-modal
-          title="分类表单"
-          v-model:visible="modalVisible"
-          :confirm-loading="modalLoading"
-          @ok="handleModalOk"
-  >
 
-  </a-modal>
 
 </template>
 
@@ -112,12 +117,14 @@
       const loading = ref(false);
       const route = useRoute();
       const editor = new E('#content');
-      editor.create();
+      editor.config.zIndex = 0;
+
 
       const columns = [
         {
           title: '名称',
-          dataIndex: 'name'
+          dataIndex: 'name',
+          slots: {customRender: 'name'},
         },
         // {
         //   title: '父分类',
@@ -131,7 +138,7 @@
         // },
 
         {
-          title: 'Action',
+          title: '操作',
           key: 'action',
           slots: {customRender: 'action'}
         }
@@ -151,6 +158,8 @@
 
                     level1.value = [];
                     level1.value = Tool.array2Tree(docs.value,0);
+                    // 记得给treeSelectData赋值，否则父文档的分类就为空
+                    treeSelectData.value = level1.value;
                   } else{
                     message.error("文档信息加载失败！");
                   }
@@ -163,7 +172,7 @@
       const modalLoading = ref(false);
       // 用以存储当前行的数据
       const doc = ref({});
-      const handleModalOk = () => {
+      const handleSave = () => {
         modalLoading.value = true;
         axios.post('/doc/save', doc.value)
              .then((response) => {
@@ -204,6 +213,7 @@
 
         }
       };
+
       /**
        * 编辑
        */
@@ -221,8 +231,6 @@
        * 新增
        */
       const add = () => {
-        modalVisible.value = true;
-        modalLoading.value = false;
         doc.value = {
           ebookId: route.query.ebookId,
         };
@@ -288,6 +296,7 @@
       onMounted(() => {
         // 页面刚加载，应该查询第一页的数据
         handleQuery();
+        editor.create();
       });
 
       return {
@@ -300,9 +309,7 @@
         add,
         del,
 
-        modalVisible,
-        modalLoading,
-        handleModalOk,
+        handleSave,
         doc,
 
         handleQuery,
