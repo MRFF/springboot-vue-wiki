@@ -98,12 +98,14 @@
   import { message } from 'ant-design-vue';
   import axios from 'axios';
   import {Tool} from "@/util/tool";
+  import {useRoute} from "vue-router";
 
   export default defineComponent({
     name: 'AdminDoc',
     setup: function () {
       const docs = ref();
       const loading = ref(false);
+      const route = useRoute();
 
       const columns = [
         {
@@ -214,7 +216,9 @@
       const add = () => {
         modalVisible.value = true;
         modalLoading.value = false;
-        doc.value = {};
+        doc.value = {
+          ebookId: route.query.ebookId,
+        };
         treeSelectData.value = Tool.copy(level1.value);
         treeSelectData.value.unshift({id: 0, name:'无'});
       };
