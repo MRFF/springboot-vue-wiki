@@ -280,7 +280,10 @@
         axios.delete('/doc/delete/' + deleteIds)
              .then((response) => {
                if(response.data.success){
+                 doc.value = {};
+                 editor.txt.html('');
                  handleQuery();
+                 message.success("文档删除成功!");
                }
         });
       };

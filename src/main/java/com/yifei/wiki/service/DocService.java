@@ -3,6 +3,7 @@ package com.yifei.wiki.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yifei.wiki.domain.Content;
+import com.yifei.wiki.domain.ContentExample;
 import com.yifei.wiki.domain.Doc;
 import com.yifei.wiki.domain.DocExample;
 import com.yifei.wiki.mapper.ContentMapper;
@@ -94,6 +95,12 @@ public class DocService {
         DocExample.Criteria criteria = docExample.createCriteria();
         criteria.andIdIn(ids);
         docMapper.deleteByExample(docExample);
+
+        System.out.println("&&&&&&&ids: " + ids);
+        ContentExample contentExample = new ContentExample();
+        ContentExample.Criteria contentCriteria = contentExample.createCriteria();
+        contentCriteria.andIdIn(ids);
+        contentMapper.deleteByExample(contentExample);
     }
 
     public String getContent(Long id){
