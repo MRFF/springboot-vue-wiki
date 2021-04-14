@@ -226,8 +226,32 @@
       /**
        * 删除
        */
+      const ids: Array<string> = [];
+      const getDeleteIds = (treeData: any, id:any) => {
+        for(let i=0;i<treeData.length;i++){
+          const current = treeData[i];
+          // 如果当前节点就是要找的节点
+          if(current.id === id){
+            ids.push(id);
+
+            if(Tool.isNotEmpty(current.children)){
+              // 遍历其孩子节点，将当前节点的孩子的disabled全部置为disabled
+              for(let c=0;c<current.children.length;c++){
+                getDeleteIds(current.children, current.children[c].id);
+              }
+            }
+          }else{
+            // 不是要找的节点，就到子节点里再找找看
+            if(Tool.isNotEmpty(current.children)){
+              getDeleteIds(current.children, id);
+            }
+          }
+
+        }
+      };
       const del = (id : string) => {
-        axios.delete('/doc/delete/' + id)
+        getDeleteIds(level1.value,id);
+        axios.delete('/doc/delete/' + ids.join(','))
              .then((response) => {
                if(response.data.success){
                  handleQuery();
