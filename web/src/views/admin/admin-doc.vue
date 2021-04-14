@@ -88,6 +88,9 @@
       <a-form-item label="排序">
         <a-input v-model:value="doc.sort" type="textarea" />
       </a-form-item>
+      <a-form-item label="内容">
+        <div id="content"></div>
+      </a-form-item>
     </a-form>
   </a-modal>
 
@@ -100,6 +103,7 @@
   import {Tool} from "@/util/tool";
   import {useRoute} from "vue-router";
   import ExclamationCircleOutlined from "@ant-design/icons-vue/ExclamationCircleOutlined";
+  import E from 'wangeditor';
 
   export default defineComponent({
     name: 'AdminDoc',
@@ -107,6 +111,8 @@
       const docs = ref();
       const loading = ref(false);
       const route = useRoute();
+      const editor = new E('#content');
+      editor.create();
 
       const columns = [
         {
