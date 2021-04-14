@@ -2,8 +2,10 @@ package com.yifei.wiki.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.yifei.wiki.domain.Content;
 import com.yifei.wiki.domain.Doc;
 import com.yifei.wiki.domain.DocExample;
+import com.yifei.wiki.mapper.ContentMapper;
 import com.yifei.wiki.mapper.DocMapper;
 import com.yifei.wiki.req.DocQueryReq;
 import com.yifei.wiki.req.DocSaveReq;
@@ -23,6 +25,8 @@ public class DocService {
     private DocMapper docMapper;
     @Autowired
     private SnowFlake snowFlake;
+    @Autowired
+    private ContentMapper contentMapper;
 
     public List<DocQueryResp> all(){
         DocExample example = new DocExample();
@@ -61,14 +65,23 @@ public class DocService {
 
     public void save(DocSaveReq req) {
         Doc doc = CopyUtil.copy(req, Doc.class);
+        Content content = CopyUtil.copy(req, Content.class);
+
         if(ObjectUtils.isEmpty(req.getId())){
             doc.setId(snowFlake.nextId());
+            content.setId(doc.getId());
             // 新增
             docMapper.insert(doc);
+            contentMapper.insert(content);
         }
         else{
             // 修改
             docMapper.updateByPrimaryKey(doc);
+            // 虽然doc和content共用id，但是doc表有数据，不一定content表就有数据
+            // 判断update后，是否成功更新，没有就说明content表没有数据，因此改为插入一条
+            int count = contentMapper.updateByPrimaryKeyWithBLOBs(content);
+            if(count == 0)
+                contentMapper.insert(content);
         }
     }
 
@@ -81,5 +94,13 @@ public class DocService {
         DocExample.Criteria criteria = docExample.createCriteria();
         criteria.andIdIn(ids);
         docMapper.deleteByExample(docExample);
+    }
+
+    public String getContent(Long id){
+        Content content = contentMapper.selectByPrimaryKey(id);
+        if(!ObjectUtils.isEmpty(content))
+            return content.getContent();
+        else
+            return "";
     }
 }

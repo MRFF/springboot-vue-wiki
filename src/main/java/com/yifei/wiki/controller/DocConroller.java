@@ -50,4 +50,12 @@ public class DocConroller {
         docService.delete(ids);
         return resp;
     }
+
+    @GetMapping("/get-content/{id}")
+    public CommonResp getContent(@PathVariable Long id){
+        CommonResp<String> resp = new CommonResp();
+        String content = docService.getContent(id);
+        resp.setContent(content);
+        return resp;
+    }
 }

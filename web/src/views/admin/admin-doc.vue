@@ -115,7 +115,6 @@
   export default defineComponent({
     name: 'AdminDoc',
     setup: function () {
-      const docs = ref();
       const loading = ref(false);
       const route = useRoute();
       const editor = new E('#content');
@@ -149,7 +148,7 @@
       // const searchParams = ref({});
       const level1 = ref();
       level1.value = [];
-
+      const docs = ref([]);
       const handleQuery = () => {
         loading.value = true;
         // 清空树形数据，确保重新加载后数据正常刷新
@@ -170,19 +169,15 @@
       };
 
 
-      // 编辑对话框用到的变量
-      const modalVisible = ref(false);
-      const modalLoading = ref(false);
       // 用以存储当前行的数据
-      const doc = ref({});
+      const doc = ref();
+      doc.value = {};
       const handleSave = () => {
-        modalLoading.value = true;
+        doc.value.content = editor.txt.html();
         axios.post('/doc/save', doc.value)
              .then((response) => {
-               modalLoading.value = false;
                if(response.data.success){
-                 modalVisible.value = false;
-
+                 message.success('保存成功！');
                  handleQuery();
                } else {
                  message.error(response.data.message);
@@ -218,12 +213,26 @@
       };
 
       /**
+       * 根据文档id从数据库查询文档内容
+       **/
+      const getContent = (id:any) => {
+        axios.get('/doc/get-content/' + id).then((response) => {
+          if(response.data.success){
+            editor.txt.html(response.data.content);
+            message.success("文档内容加载成功！")
+          } else{
+            message.error("文档内容加载失败！");
+          }
+        });
+      };
+
+      /**
        * 编辑
        */
       const treeSelectData = ref();
       const edit = (record: any) => {
-        modalVisible.value = true;
         doc.value = Tool.copy(record);
+        getContent(doc.value.id);
         // 每次进入编辑，都将父分类中的当前文档及其子文档设置为不可选
         treeSelectData.value = Tool.copy(level1.value);
         setChildrenDisable(treeSelectData.value, record.id);
@@ -237,6 +246,7 @@
         doc.value = {
           ebookId: route.query.ebookId,
         };
+        editor.txt.clear();
         treeSelectData.value = Tool.copy(level1.value);
         treeSelectData.value.unshift({id: 0, name:'无'});
       };
