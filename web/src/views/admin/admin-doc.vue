@@ -39,7 +39,7 @@
                     title="删除后不可恢复，确认删除?"
                     ok-text="是"
                     cancel-text="否"
-                    @confirm="del(record.id)"
+                    @confirm="showConfirm(record.id)"
             >
               <a-button type="danger">
                 删除
@@ -94,11 +94,12 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, onMounted, ref } from 'vue';
-  import { message } from 'ant-design-vue';
+  import {defineComponent, onMounted, ref, createVNode } from 'vue';
+  import { message, Modal } from 'ant-design-vue';
   import axios from 'axios';
   import {Tool} from "@/util/tool";
   import {useRoute} from "vue-router";
+  import ExclamationCircleOutlined from "@ant-design/icons-vue/ExclamationCircleOutlined";
 
   export default defineComponent({
     name: 'AdminDoc',
@@ -226,36 +227,55 @@
       /**
        * 删除
        */
-      const ids: Array<string> = [];
-      const getDeleteIds = (treeData: any, id:any) => {
+      const getDeleteNodes = (treeData: any, id:any, nodes:Array<any>) => {
         for(let i=0;i<treeData.length;i++){
           const current = treeData[i];
           // 如果当前节点就是要找的节点
           if(current.id === id){
-            ids.push(id);
+            nodes.push(current);
 
             if(Tool.isNotEmpty(current.children)){
               // 遍历其孩子节点，将当前节点的孩子的disabled全部置为disabled
               for(let c=0;c<current.children.length;c++){
-                getDeleteIds(current.children, current.children[c].id);
+                getDeleteNodes(current.children, current.children[c].id, nodes);
               }
             }
           }else{
             // 不是要找的节点，就到子节点里再找找看
             if(Tool.isNotEmpty(current.children)){
-              getDeleteIds(current.children, id);
+              getDeleteNodes(current.children, id, nodes);
             }
           }
 
         }
       };
-      const del = (id : string) => {
-        getDeleteIds(level1.value,id);
-        axios.delete('/doc/delete/' + ids.join(','))
+      const del = (deleteIds : string) => {
+        axios.delete('/doc/delete/' + deleteIds)
              .then((response) => {
                if(response.data.success){
                  handleQuery();
                }
+        });
+      };
+      const showConfirm = (id: string) => {
+        let deleteNodes: Array<any> = [];
+        getDeleteNodes(level1.value, id, deleteNodes);
+        let deleteNames : Array<string> = [];
+        let deleteIds : Array<string> = [];
+        deleteNodes.forEach((item) => {
+          deleteNames.push(item.name);
+          deleteIds.push(item.id)
+        });
+        // console.log(deleteNames, deleteIds);
+        Modal.confirm({
+          title: '重要提醒',
+          icon: createVNode(ExclamationCircleOutlined),
+          content: '子文档也会一并删除，且不可恢复!'+ '确认要删除【' + deleteNames.join(',') + '】?',
+          onOk() {
+            del(deleteIds.join(','));
+          },
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onCancel() {},
         });
       };
 
@@ -281,6 +301,8 @@
 
         handleQuery,
         treeSelectData,
+
+        showConfirm,
       };
 
     }
