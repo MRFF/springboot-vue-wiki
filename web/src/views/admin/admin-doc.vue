@@ -137,10 +137,10 @@
         loading.value = true;
         // 清空树形数据，确保重新加载后数据正常刷新
         level1.value = [];
-        axios.get('/doc/all').then((response) => {
+        axios.get('/doc/get?ebookId=' + route.query.ebookId).then((response) => {
                   loading.value = false;
                   if(response.data.success){
-                    docs.value = response.data.content;
+                    docs.value = response.data.content.records;
 
                     level1.value = [];
                     level1.value = Tool.array2Tree(docs.value,0);

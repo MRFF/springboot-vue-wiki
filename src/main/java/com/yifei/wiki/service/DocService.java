@@ -35,13 +35,18 @@ public class DocService {
 
     // 参数名一致时，会自动找到类中的属性映射
     public PageResp<DocQueryResp> get(DocQueryReq req){
+
+
         DocExample example = new DocExample();
         example.setOrderByClause("sort asc");
         DocExample.Criteria criteria = example.createCriteria();
 
-        // 使用分页插件，实现分页。每次设置分页，都只会生效一次，因此注意要与分页查询语句紧邻，中间不能有其它查询
-        PageHelper.startPage(req.getPage(), req.getSize());
+        if(!ObjectUtils.isEmpty(req.getEbookId()))
+            criteria.andEbookIdEqualTo(req.getEbookId());
+        PageHelper.startPage(req.getPage(), req.getSize(),false);
         List<Doc> docs = docMapper.selectByExample(example);
+
+        // 使用分页插件，实现分页。每次设置分页，都只会生效一次，因此注意要与分页查询语句紧邻，中间不能有其它查询
 
 
         // 获取分页后的信息，可以获取结果总条数
