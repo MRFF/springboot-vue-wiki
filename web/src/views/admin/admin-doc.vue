@@ -72,15 +72,18 @@
 <!--        />-->
 <!--      </a-form-item>-->
       <a-form-item label="父分类">
-        <a-select
+
+        <a-tree-select
                 v-model:value="doc.parent"
-                ref="select"
-        >
-          <a-select-option value="0">无</a-select-option>
-          <a-select-option v-for="item in level1" :key="item.id" :value="item.id" :disabled="item.id === doc.id">
-            {{item.name}}
-          </a-select-option>
-        </a-select>
+                tree-data-simple-mode
+                style="width: 100%"
+                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                :tree-data="treeSelectData"
+                placeholder="选择父文档"
+                :load-data="onLoadData"
+                :replaceFields="{title: 'name', key: 'id', value:'id'}"
+        />
+
       </a-form-item>
       <a-form-item label="排序">
         <a-input v-model:value="doc.sort" type="textarea" />
@@ -130,6 +133,8 @@
 
       const handleQuery = () => {
         loading.value = true;
+        // 清空树形数据，确保重新加载后数据正常刷新
+        level1.value = [];
         axios.get('/doc/all').then((response) => {
                   loading.value = false;
                   if(response.data.success){
@@ -138,7 +143,7 @@
                     level1.value = [];
                     level1.value = Tool.array2Tree(docs.value,0);
                   } else{
-                    message.error("分类信息加载失败！");
+                    message.error("文档信息加载失败！");
                   }
         });
       };
@@ -166,11 +171,41 @@
       };
 
       /**
+       * 将树中某一节点及其子节点的disabled属性全部设置为true
+       */
+      const setChildrenDisable = (treeData: any, id:any) => {
+        for(let i=0;i<treeData.length;i++){
+          const current = treeData[i];
+          // 如果当前节点就是要找的节点
+          if(current.id === id){
+            current.disabled = true;
+
+            if(Tool.isNotEmpty(current.children)){
+              // 遍历其孩子节点，将当前节点的孩子的disabled全部置为disabled
+              for(let c=0;c<current.children.length;c++){
+                setChildrenDisable(current.children, current.children[c].id);
+              }
+            }
+          }else{
+            // 不是要找的节点，就到子节点里再找找看
+            if(Tool.isNotEmpty(current.children)){
+              setChildrenDisable(current.children, id);
+            }
+          }
+
+        }
+      };
+      /**
        * 编辑
        */
+      const treeSelectData = ref();
       const edit = (record: any) => {
         modalVisible.value = true;
         doc.value = Tool.copy(record);
+        // 每次进入编辑，都将父分类中的当前文档及其子文档设置为不可选
+        treeSelectData.value = Tool.copy(level1.value);
+        setChildrenDisable(treeSelectData.value, record.id);
+        treeSelectData.value.unshift({id: 0, name:'无'});
       };
 
       /**
@@ -180,6 +215,8 @@
         modalVisible.value = true;
         modalLoading.value = false;
         doc.value = {};
+        treeSelectData.value = Tool.copy(level1.value);
+        treeSelectData.value.unshift({id: 0, name:'无'});
       };
 
       /**
@@ -215,6 +252,7 @@
         doc,
 
         handleQuery,
+        treeSelectData,
       };
 
     }
